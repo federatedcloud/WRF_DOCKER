@@ -1,5 +1,5 @@
 #
-FROM centos:latest
+FROM centos:7
 MAINTAINER Dave Gill <gill@ucar.edu>
 
 ENV WRF_VERSION 4.0.3
@@ -147,6 +147,11 @@ RUN ssh-keygen -f /wrf/.ssh/id_rsa -t rsa -N '' \
     && chmod 600 /wrf/.ssh/config \
     && chmod 700 /wrf/.ssh \
     && cp /wrf/.ssh/id_rsa.pub /wrf/.ssh/authorized_keys
+
+RUN mkdir /wrf/build_and_test_wrf && chown wrfuser:wrf /wrf/build_and_test_wrf
+COPY --chown=wrfuser:wrf build_and_test_wrf/build.tcsh /wrf/build_and_test_wrf
+COPY --chown=wrfuser:wrf build_and_test_wrf/test.tcsh /wrf/build_and_test_wrf
+# manually execute these inside the container as Dockerfile build encountered silent errors in compilation
 
 VOLUME /wrf
 CMD ["/bin/tcsh"]
